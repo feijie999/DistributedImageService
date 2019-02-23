@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImageCore\ImageCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Http.Features">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.aspnetcore.http.features\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.Abstractions">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.aspnetcore.mvc.abstractions\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
