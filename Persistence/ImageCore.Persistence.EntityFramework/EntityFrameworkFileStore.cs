@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ImageCore.Models;
 
 namespace ImageCore.Persistence.EntityFramework
 {
@@ -17,6 +18,11 @@ namespace ImageCore.Persistence.EntityFramework
         }
 
         public Task<string> PersistenceTempFile(string fileId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ImageDataDto> GetImageData(Guid imageId)
         {
             throw new NotImplementedException();
         }

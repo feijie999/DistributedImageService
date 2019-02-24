@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using ImageCore.Models;
 
 namespace ImageCore
 {
@@ -20,5 +22,7 @@ namespace ImageCore
         /// <param name="fileId">文件Id</param>
         /// <returns>返回文件token</returns>
         Task<string> PersistenceTempFile(string fileId);
+
+        Task<ImageDataDto> GetImageData(Guid imageId);
     }
 }
