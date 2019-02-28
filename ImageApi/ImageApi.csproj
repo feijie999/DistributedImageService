@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ImageApi.Core\ImageApi.Core.csproj" />
+    <ProjectReference Include="..\Persistence\ImageCore.Persistence.EntityFramework\ImageCore.Persistence.EntityFramework.csproj" />
   </ItemGroup>
 
 </Project>

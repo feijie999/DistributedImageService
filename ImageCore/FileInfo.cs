@@ -7,6 +7,7 @@ namespace ImageCore
 {
     public abstract class FileInfo
     {
+
         public string FileName { get; set; }
         public long Length { get; set; }
         public string Extension { get; set; }

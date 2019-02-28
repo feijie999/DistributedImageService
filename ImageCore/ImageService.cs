@@ -46,5 +46,11 @@ namespace ImageCore
                 image.Save(physicalPath, encoder);
             }
         }
+
+        public string GenerateKey(BusinessType type, Guid id, ImageFormat format)
+        {
+            var yearMonth = DateTime.Now.ToString("yyyyMM");
+            return string.Format("t{0}t{3}-{1:N}{2}", type, id, format.GetExtension(), yearMonth);
+        }
     }
 }

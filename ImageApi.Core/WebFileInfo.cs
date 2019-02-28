@@ -19,13 +19,12 @@ namespace ImageApi.Core
         private IFormFile _file;
         public IFormFile File
         {
-            get { return _file; }
+            get => _file;
             set
             {
                 if (value != null)
                 {
                     this._file = value;
-
                     this.FileType = this._file.ContentType;
                     this.Length = this._file.Length;
                     this.Extension = this._file.FileName.Substring(_file.FileName.LastIndexOf('.'));
@@ -33,6 +32,22 @@ namespace ImageApi.Core
                         this.FileName = this.FileName;
                 }
             }
+        }
+
+        private byte[] _fileBytes;
+
+        public byte[] FileBytes
+        {
+            get
+            {
+                if (_fileBytes != null || _file == null) return _fileBytes;
+                var fileStream = _file.OpenReadStream();
+                _fileBytes = new byte[_file.Length];
+                _file.OpenReadStream().Read(_fileBytes, 0, _fileBytes.Length);
+                fileStream.Flush();
+                return _fileBytes;
+            }
+            set => _fileBytes = value;
         }
     }
 }
