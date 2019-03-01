@@ -7,16 +7,10 @@ namespace ImageCore
 {
     public abstract class FileInfo
     {
-
         public string FileName { get; set; }
         public long Length { get; set; }
         public string Extension { get; set; }
         public string FileType { get; set; }
-        
-
-        public abstract string[] Filters { get; }
-
-        public bool IsValid => !string.IsNullOrEmpty(this.Extension) && Filters.Contains(this.Extension);
 
         public virtual async Task<string> SaveAs(string destinationDir = null)
         {

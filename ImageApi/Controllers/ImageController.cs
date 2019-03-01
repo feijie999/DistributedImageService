@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ImageApi.Core;
 using ImageCore;
 using ImageCore.Enums;
+using ImageCore.Extensions;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,16 +23,25 @@ namespace ImageApi.Controllers
         private readonly IImageService _imageService;
         private readonly ImageOption _imageOption;
 
-        public ImageController(IFileStore fileStore, IImageService imageService, IOptions<ImageOption> imageOption)
+        /// <inheritdoc />
+        public ImageController(IFileStore fileStore, IImageService imageService, ImageOption imageOption)
         {
             _fileStore = fileStore;
             _imageService = imageService;
-            _imageOption = imageOption.Value;
+            _imageOption = imageOption;
         }
 
-        [Route("img/{size}/t{imageType}t{yearMonth}-{id}.{format}")]
-        public async Task<IActionResult> Index(ImageParameter parameter)
+        /// <summary>
+        /// 图片链接
+        /// </summary>
+        /// <param name="parameterFixer"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        [Route("/img/{size}/t{imageType}t{yearMonth}-{id}.{format}")]
+        [HttpGet]
+        public async Task<IActionResult> Index([FromServices]IImageParameterFixer parameterFixer, [FromRoute]ImageParameter parameter)
         {
+            parameter = parameter.GetFixed(parameterFixer);
             var physicalPath = Path.GetFullPath(parameter.GetRelativePath());
             var contentType = "image/" + parameter.Format;
             if (System.IO.File.Exists(physicalPath))
@@ -61,6 +71,7 @@ namespace ImageApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload([FromFile] ImageFileInfo file,bool isTemp = false, BusinessType businessType=BusinessType.Default)
         {
+            file.Validate(_imageOption);
             var image = file.ToImage();
             var imageKey = await _fileStore.SaveAsync(image, isTemp);
             return Ok(imageKey);

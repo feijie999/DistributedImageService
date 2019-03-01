@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ImageApi</name>
+    </assembly>
+    <members>
+        <member name="M:ImageApi.Controllers.ImageController.#ctor(ImageCore.IFileStore,ImageCore.IImageService,ImageCore.ImageOption)">
+            <inheritdoc />
+        </member>
+        <member name="M:ImageApi.Controllers.ImageController.Index(ImageApi.Core.IImageParameterFixer,ImageApi.Core.ImageParameter)">
+            <summary>
+            图片链接
+            </summary>
+            <param name="parameterFixer"></param>
+            <param name="parameter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ImageApi.Controllers.ImageController.Upload(ImageApi.Core.ImageFileInfo,System.Boolean,ImageCore.Enums.BusinessType)">
+            <summary>
+            返回的格式: "img/{size}/default-{name}.{format}", "img/{size}/t{imageType}t{yearMonth}-{id}.{format}"
+            </summary>
+            <param name="file"></param>
+            <param name="isTemp">是否是临时图片，临时图片将定期清理</param>
+            <param name="businessType">业务类型</param>
+            <returns>
+            例如 /img/full/t20t201902-94E0437664E3FA99C094E0437664E3FA99C0.png
+            例如 /img/s80x80/t20t201902-94E0437664E3FA99C094E0437664E3FA99C0.png
+            </returns>
+        </member>
+    </members>
+</doc>

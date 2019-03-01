@@ -1,4 +1,5 @@
-﻿using ImageCore.Enums;
+﻿using ImageCore;
+using ImageCore.Enums;
 using SixLabors.ImageSharp;
 using SixLabors.Primitives;
 

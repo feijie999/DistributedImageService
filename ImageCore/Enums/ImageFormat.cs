@@ -22,6 +22,10 @@ namespace ImageCore.Enums
         public static ImageFormat GetFormatFromExtension(this string ext)
         {
             ext = ext.ToLower();
+            if (!ext.StartsWith("."))
+            {
+                ext = "."+ ext;
+            }
             switch (ext)
             {
                 case ".jpg":

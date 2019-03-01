@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using ImageCore;
 using Microsoft.AspNetCore.Http;
 using FileInfo = ImageCore.FileInfo;
 
@@ -10,7 +11,6 @@ namespace ImageApi.Core
 {
     public class WebFileInfo : FileInfo
     {
-        public override string[] Filters => new []{"dll","png","jpg"};
         protected override Task CopyToAsync(Stream stream)
         {
            return File.CopyToAsync(stream);
@@ -41,11 +41,12 @@ namespace ImageApi.Core
             get
             {
                 if (_fileBytes != null || _file == null) return _fileBytes;
-                var fileStream = _file.OpenReadStream();
-                _fileBytes = new byte[_file.Length];
-                _file.OpenReadStream().Read(_fileBytes, 0, _fileBytes.Length);
-                fileStream.Flush();
-                return _fileBytes;
+                using (var fileStream = _file.OpenReadStream())
+                {
+                    _fileBytes = new byte[_file.Length];
+                    fileStream.Read(_fileBytes, 0, _fileBytes.Length);
+                    return _fileBytes;
+                }
             }
             set => _fileBytes = value;
         }

@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ImageApi.Core;
+using ImageCore.Extensions;
+using ImageCore.Persistence.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -17,7 +22,20 @@ namespace ImageApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info {Title = "图片资源API", Version = "v1"}); });
+            services.AddSingleton<IImageParameterFixer, DefaultImageParameterFixer>();
+            services.AddImageService(option =>
+                {
+                    option.Filters = new[] {".jpg", ".png", ".bmp"};
+                })
+                .UseEntityFrameworkStore(builder =>
+                {
+                    builder.UseSqlServer("Server=localhost; Database=ImageDb; Trusted_Connection=True;");
+                });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info {Title = "图片资源API", Version = "v1"});
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ImageApi.xml"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -29,11 +47,9 @@ namespace ImageApi
             }
 
             app.UseMvcWithDefaultRoute();
+            app.UseStaticFiles();
             app.UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "图片资源API");
-                });
+                .UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "图片资源API"); });
         }
     }
 }

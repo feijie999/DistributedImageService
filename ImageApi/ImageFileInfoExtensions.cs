@@ -12,16 +12,16 @@ namespace ImageApi.Core
             ImageFormat imageFormat;
             switch (fileInfo.Extension)
             {
-                case "jpg":
+                case ".jpg":
                     imageFormat = ImageFormat.Jpeg;
                     break;
-                case "gif":
+                case ".gif":
                     imageFormat = ImageFormat.Gif;
                     break;
-                case "bmp":
+                case ".bmp":
                     imageFormat = ImageFormat.Bmp;
                     break;
-                case "png":
+                case ".png":
                     imageFormat = ImageFormat.Png;
                     break;
                 default:
