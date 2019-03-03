@@ -4,6 +4,11 @@
         <name>ImageApi</name>
     </assembly>
     <members>
+        <member name="T:ImageApi.Controllers.ImageController">
+            <summary>
+            图片服务
+            </summary>
+        </member>
         <member name="M:ImageApi.Controllers.ImageController.#ctor(ImageCore.IFileStore,ImageCore.IImageService,ImageCore.ImageOption,Microsoft.Extensions.FileProviders.IFileProvider)">
             <inheritdoc />
         </member>
