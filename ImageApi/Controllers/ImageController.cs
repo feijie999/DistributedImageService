@@ -10,25 +10,32 @@ using ImageCore.Extensions;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 
 namespace ImageApi.Controllers
 {
+    /// <summary>
+    /// 图片服务
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ImageController : ControllerBase
     {
         private readonly IFileStore _fileStore;
         private readonly IImageService _imageService;
+        private readonly IFileProvider _fileProvider;
         private readonly ImageOption _imageOption;
 
         /// <inheritdoc />
-        public ImageController(IFileStore fileStore, IImageService imageService, ImageOption imageOption)
+        public ImageController(IFileStore fileStore, IImageService imageService, ImageOption imageOption, IFileProvider fileProvider)
         {
             _fileStore = fileStore;
             _imageService = imageService;
             _imageOption = imageOption;
+            _fileProvider = fileProvider;
         }
 
         /// <summary>
@@ -39,14 +46,18 @@ namespace ImageApi.Controllers
         /// <returns></returns>
         [Route("/img/{size}/t{imageType}t{yearMonth}-{id}.{format}")]
         [HttpGet]
+        [ResponseCache(Duration = 600, Location = ResponseCacheLocation.Any)]
         public async Task<IActionResult> Index([FromServices]IImageParameterFixer parameterFixer, [FromRoute]ImageParameter parameter)
         {
             parameter = parameter.GetFixed(parameterFixer);
-            var physicalPath = Path.GetFullPath(parameter.GetRelativePath());
+            var relativePath = parameter.GetRelativePath();
+            var physicalPath = Path.GetFullPath("App_Data\\"+relativePath);
+            IFileInfo fileInfo;
             var contentType = "image/" + parameter.Format;
             if (System.IO.File.Exists(physicalPath))
             {
-                return File(physicalPath, contentType);
+                 fileInfo = _fileProvider.GetFileInfo(relativePath);
+                return File(fileInfo.CreateReadStream(), contentType);
             }
             var physicalFolder = Path.GetDirectoryName(physicalPath);
             if (!Directory.Exists(physicalFolder))
@@ -55,7 +66,8 @@ namespace ImageApi.Controllers
             }
             var imageData = await _fileStore.GetImageData(Guid.Parse(parameter.Id));
             _imageService.ImageCastAndSaveToFile(imageData.Bytes, parameter.Size, parameter.ImageFormat, physicalPath);
-            return File(physicalPath, contentType);
+            fileInfo = _fileProvider.GetFileInfo(relativePath);
+            return File(fileInfo.CreateReadStream(), contentType);
         }
 
         /// <summary>

@@ -14,6 +14,7 @@ namespace ImageApi.Core
             {
                 throw new Exception("错误的年月格式");
             }
+            parameter.Format = parameter.Format.Replace("jpg", "jpeg");
             parameter.ImageFormat = parameter.Format.GetFormatFromExtension();
             return parameter;
         }

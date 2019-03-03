@@ -9,8 +9,10 @@ using ImageCore.Persistence.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ImageApi
@@ -22,6 +24,8 @@ namespace ImageApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSingleton<IFileProvider>(
+                new PhysicalFileProvider(Directory.GetCurrentDirectory()+ "\\App_Data"));
             services.AddSingleton<IImageParameterFixer, DefaultImageParameterFixer>();
             services.AddImageService(option =>
                 {
@@ -45,9 +49,7 @@ namespace ImageApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseMvcWithDefaultRoute();
-            app.UseStaticFiles();
             app.UseSwagger()
                 .UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "图片资源API"); });
         }

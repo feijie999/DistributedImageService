@@ -29,7 +29,7 @@ namespace ImageApi.Core
                     this.Length = this._file.Length;
                     this.Extension = this._file.FileName.Substring(_file.FileName.LastIndexOf('.'));
                     if (string.IsNullOrEmpty(this.FileName))
-                        this.FileName = this.FileName;
+                        this.FileName = this._file.FileName;
                 }
             }
         }

@@ -4,7 +4,7 @@
         <name>ImageApi</name>
     </assembly>
     <members>
-        <member name="M:ImageApi.Controllers.ImageController.#ctor(ImageCore.IFileStore,ImageCore.IImageService,ImageCore.ImageOption)">
+        <member name="M:ImageApi.Controllers.ImageController.#ctor(ImageCore.IFileStore,ImageCore.IImageService,ImageCore.ImageOption,Microsoft.Extensions.FileProviders.IFileProvider)">
             <inheritdoc />
         </member>
         <member name="M:ImageApi.Controllers.ImageController.Index(ImageApi.Core.IImageParameterFixer,ImageApi.Core.ImageParameter)">

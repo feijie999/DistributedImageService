@@ -30,12 +30,17 @@ namespace ImageApi.Core
 
         public string GetRelativePath()
         {
-            var folder = $"\\storage\\images\\{this.Year}\\{this.Month}\\{this.Id}\\";
+            var folder = $"storage\\images\\{this.Year}\\{this.Month}\\{this.Id}\\";
             if (this.ImageFormat == ImageFormat.Gif)
             {
                 return folder + "Full.gif";
             }
             return folder + $"{this.Size}.{this.Format}";
+        }
+
+        public string GetVirtualPath()
+        {
+            return "~\\"+GetRelativePath();
         }
     }
 }

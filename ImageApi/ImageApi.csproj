@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Persistence\ImageCore.Persistence.EntityFramework\ImageCore.Persistence.EntityFramework.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+
 </Project>

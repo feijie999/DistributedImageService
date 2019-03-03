@@ -19,8 +19,7 @@ namespace ImageCore
             using (var image = Image.Load(bytes))
             {
                 image.Mutate(x => x
-                    .Resize(imageSize.GetSize())
-                    .Grayscale());
+                    .Resize(imageSize.GetSize()));
                 using (var stream = new MemoryStream())
                 {
                     var encoder =
@@ -41,8 +40,7 @@ namespace ImageCore
                 var encoder =
                     image.GetConfiguration().ImageFormatsManager.FindEncoder(format.GetFormat());
                 image.Mutate(x => x
-                    .Resize(imageSize.GetSize())
-                    .Grayscale());
+                    .Resize(imageSize.GetSize()));
                 image.Save(physicalPath, encoder);
             }
         }
