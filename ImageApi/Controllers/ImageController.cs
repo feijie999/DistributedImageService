@@ -47,24 +47,31 @@ namespace ImageApi.Controllers
         [Route("/img/{size}/t{imageType}t{yearMonth}-{id}.{format}")]
         [HttpGet]
         [ResponseCache(Duration = 600, Location = ResponseCacheLocation.Any)]
-        public async Task<IActionResult> Index([FromServices]IImageParameterFixer parameterFixer, [FromRoute]ImageParameter parameter)
+        public async Task<IActionResult> Index([FromServices] IImageParameterFixer parameterFixer,
+            [FromRoute] ImageParameter parameter)
         {
             parameter = parameter.GetFixed(parameterFixer);
             var relativePath = parameter.GetRelativePath();
-            var physicalPath = Path.GetFullPath("App_Data\\"+relativePath);
+            var physicalPath = Path.GetFullPath(relativePath);
             IFileInfo fileInfo;
             var contentType = "image/" + parameter.Format;
             if (System.IO.File.Exists(physicalPath))
             {
-                 fileInfo = _fileProvider.GetFileInfo(relativePath);
+                fileInfo = _fileProvider.GetFileInfo(relativePath);
                 return File(fileInfo.CreateReadStream(), contentType);
             }
+
             var physicalFolder = Path.GetDirectoryName(physicalPath);
             if (!Directory.Exists(physicalFolder))
             {
                 Directory.CreateDirectory(physicalFolder);
             }
+
             var imageData = await _fileStore.GetImageData(Guid.Parse(parameter.Id));
+            if (imageData == null)
+            {
+                return NotFound();
+            }
             _imageService.ImageCastAndSaveToFile(imageData.Bytes, parameter.Size, parameter.ImageFormat, physicalPath);
             fileInfo = _fileProvider.GetFileInfo(relativePath);
             return File(fileInfo.CreateReadStream(), contentType);
@@ -81,7 +88,8 @@ namespace ImageApi.Controllers
         /// 例如 /img/s80x80/t20t201902-94E0437664E3FA99C094E0437664E3FA99C0.png
         /// </returns>
         [HttpPost]
-        public async Task<IActionResult> Upload([FromFile] ImageFileInfo file,bool isTemp = false, BusinessType businessType=BusinessType.Default)
+        public async Task<IActionResult> Upload([FromFile] ImageFileInfo file, bool isTemp = false,
+            BusinessType businessType = BusinessType.Default)
         {
             file.Validate(_imageOption);
             var image = file.ToImage();

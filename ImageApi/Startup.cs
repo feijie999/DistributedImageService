@@ -37,7 +37,7 @@ namespace ImageApi
         {
             services.AddMvc();
             services.AddSingleton<IFileProvider>(
-                new PhysicalFileProvider(Directory.GetCurrentDirectory()+ "\\App_Data"));
+                new PhysicalFileProvider(Directory.GetCurrentDirectory()));
             services.AddSingleton<IImageParameterFixer, DefaultImageParameterFixer>();
             services.AddImageService(option =>
                 {

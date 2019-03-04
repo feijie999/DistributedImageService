@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ImageCore.Extensions
 {
-    public static class ImageServcieExtenstion
+    public static class ImageServiceExtensions
     {
         public static ImageServiceBuilder AddImageService(this IServiceCollection service, Action<ImageOption> action = null)
         {
