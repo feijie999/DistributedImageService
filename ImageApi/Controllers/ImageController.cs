@@ -93,7 +93,6 @@ namespace ImageApi.Controllers
         /// 例如 /img/s80x80/t20t201902-94E0437664E3FA99C094E0437664E3FA99C0.png
         /// </returns>
         [HttpPost]
-        [HttpHead("")]
         public async Task<IActionResult> Upload([FromFile] ImageFileInfo file, bool isTemp = false,
             BusinessType businessType = BusinessType.Default)
         {
