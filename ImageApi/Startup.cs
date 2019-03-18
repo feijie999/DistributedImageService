@@ -67,6 +67,7 @@ namespace ImageApi
             {
                 c.SwaggerDoc("v1", new Info {Title = "图片资源API", Version = "v1"});
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ImageApi.xml"));
+                c.OperationFilter<SwaggerFileUploadFilter>();
             });
         }
 
