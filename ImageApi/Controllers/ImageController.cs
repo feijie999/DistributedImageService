@@ -40,6 +40,11 @@ namespace ImageApi.Controllers
 
         /// <summary>
         /// 图片链接
+        /// url格式：/img/{size}/t{imageType}t{yearMonth}-{id}.{format}
+        /// 例如：http://172.16.4.64:8089/img/s250x250/tDefaultt201903-7a35a53d36334e008f282a9927043df5.jpg
+        /// {size},枚举为:
+        /// Full = 0, S80X80 = 1,S150X50 = 2, S100X100 = 3,S160X160 = 4,S190X190 = 6,S250X250 = 7,S300X300 = 8,S450X450 = 9,S600X600 = 10,S1920X1920 = 11,H100 = 5
+        /// t{imageType}t{yearMonth}-{id}.{format}为<see cref="Upload"/> 接口返回的ImageKey
         /// </summary>
         /// <param name="parameterFixer"></param>
         /// <param name="parameter"></param>
@@ -78,7 +83,7 @@ namespace ImageApi.Controllers
         }
 
         /// <summary>
-        /// 返回的格式: "img/{size}/default-{name}.{format}", "img/{size}/t{imageType}t{yearMonth}-{id}.{format}"
+        /// 返回的格式: "{size}/default-{name}.{format}"
         /// </summary>
         /// <param name="file"></param>
         /// <param name="isTemp">是否是临时图片，临时图片将定期清理</param>
