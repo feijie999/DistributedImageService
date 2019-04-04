@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ImageCore.Enums;
+﻿using ImageCore.Enums;
 
 namespace ImageCore.Models
 {
