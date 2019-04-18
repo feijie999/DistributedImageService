@@ -22,13 +22,13 @@ namespace ImageApi
     {
         private const string DefaultCorsPolicyName = "public";
 
-        private readonly IConfigurationRoot _appConfiguration;
+        private readonly IConfiguration configuration;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
             _hostingEnvironment = env;
-            _appConfiguration = env.GetAppConfiguration();
+            this.configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,13 +39,16 @@ namespace ImageApi
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(Directory.GetCurrentDirectory()));
             services.AddSingleton<IImageParameterFixer, DefaultImageParameterFixer>();
+            services.AddEntityFrameworkNpgsql();
             services.AddImageService(option =>
                 {
-                    option.Filters = new[] {".jpg", ".png", ".bmp"};
+                    option.Filters = new[] {".jpg", ".jpeg", ".gif", ".png", ".bmp"};
                 })
                 .UseEntityFrameworkStore(builder =>
                 {
-                    builder.UseSqlServer("Server=localhost; Database=ImageDb; Trusted_Connection=True;");
+                    //builder.UseSqlServer("Server=localhost; Database=ImageDb; Trusted_Connection=True;");
+                    //builder.UseNpgsql(_appConfiguration.GetConnectionString("Default"));
+                    builder.UseMySql(configuration.GetConnectionString("Mysql"));
                 });
             services.AddCors(options =>
             {
@@ -53,7 +56,7 @@ namespace ImageApi
                 {
                     builder
                         .WithOrigins(
-                            _appConfiguration["CorsOrigins"]
+                            configuration["CorsOrigins"]
                                 .Split(",", StringSplitOptions.RemoveEmptyEntries)
                                 .ToArray()
                         )
@@ -82,14 +85,6 @@ namespace ImageApi
             app.UseMvcWithDefaultRoute();
             app.UseSwagger()
                 .UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "图片资源API"); });
-        }
-    }
-
-    public static class HostingEnvironmentExtensions
-    {
-        public static IConfigurationRoot GetAppConfiguration(this IHostingEnvironment env)
-        {
-            return AppConfigurations.Get(env.ContentRootPath, env.EnvironmentName);
         }
     }
 }

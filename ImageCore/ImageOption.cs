@@ -12,9 +12,9 @@ namespace ImageCore
         public string[] Filters { get; set; } = {".jpg", ".png", ".bmp"};
 
         /// <summary>
-        /// 可接收文件最大的大小单位kb，默认为2MB
+        /// 可接收文件最大的大小单位kb，默认为5MB
         /// </summary>
-        public long MaxContentLength { get; set; } = 1024*1024 * 2;
+        public long MaxContentLength { get; set; } = 1024*1024 * 5;
 
         /// <summary>
         /// 文件存储模式，默认为分布式存储

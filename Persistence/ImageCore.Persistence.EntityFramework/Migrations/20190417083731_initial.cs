@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ImageCore.Persistence.EntityFramework.Migrations
 {
-    public partial class Inital : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,8 +32,7 @@ namespace ImageCore.Persistence.EntityFramework.Migrations
                 name: "IX_Images_Key",
                 table: "Images",
                 column: "Key",
-                unique: true,
-                filter: "[Key] IS NOT NULL");
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
