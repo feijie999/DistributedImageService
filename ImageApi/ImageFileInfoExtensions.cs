@@ -13,6 +13,7 @@ namespace ImageApi.Core
             switch (fileInfo.Extension)
             {
                 case ".jpg":
+                case ".jpeg":
                     imageFormat = ImageFormat.Jpeg;
                     break;
                 case ".gif":

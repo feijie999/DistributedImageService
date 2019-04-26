@@ -51,7 +51,7 @@ namespace ImageApi.Controllers
         /// <returns></returns>
         [Route("/img/{size}/t{imageType}t{yearMonth}-{id}.{format}")]
         [HttpGet]
-        [ResponseCache(Duration = 600, Location = ResponseCacheLocation.Any)]
+        [ResponseCache(Duration = 600, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> Index([FromServices] IImageParameterFixer parameterFixer,
             [FromRoute] ImageParameter parameter)
         {
