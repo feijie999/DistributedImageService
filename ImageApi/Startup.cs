@@ -47,8 +47,8 @@ namespace ImageApi
                 .UseEntityFrameworkStore(builder =>
                 {
                     //builder.UseSqlServer("Server=localhost; Database=ImageDb; Trusted_Connection=True;");
-                    //builder.UseNpgsql(_appConfiguration.GetConnectionString("Default"));
-                    builder.UseMySql(configuration.GetConnectionString("Mysql"));
+                    builder.UseNpgsql(configuration.GetConnectionString("Default"));
+                    //builder.UseMySql(configuration.GetConnectionString("Mysql"));
                 });
             services.AddCors(options =>
             {

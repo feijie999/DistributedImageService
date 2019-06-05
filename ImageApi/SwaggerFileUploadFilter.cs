@@ -20,9 +20,10 @@ namespace ImageApi
             }
 
             var fileParameters = context.ApiDescription.ActionDescriptor.Parameters
-                .Where(n => n.ParameterType == typeof(IFormFile)||n.BindingInfo.BindingSource == BindingSource.FormFile).ToList();
+                .Where(n => n.ParameterType == typeof(IFormFile) ||
+                            (n.BindingInfo != null && n.BindingInfo.BindingSource == BindingSource.FormFile)).ToList();
 
-            if (fileParameters.Count < 0)
+            if (fileParameters.Count == 0)
             {
                 return;
             }

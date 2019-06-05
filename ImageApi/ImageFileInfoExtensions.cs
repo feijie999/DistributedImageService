@@ -10,7 +10,7 @@ namespace ImageApi.Core
         public static ImageDto ToImage(this ImageFileInfo fileInfo)
         {
             ImageFormat imageFormat;
-            switch (fileInfo.Extension)
+            switch (fileInfo.Extension.ToLower())
             {
                 case ".jpg":
                 case ".jpeg":
