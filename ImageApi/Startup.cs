@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ImageApi
@@ -36,11 +37,13 @@ namespace ImageApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvcCore()
+                .AddApiExplorer();
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(Directory.GetCurrentDirectory()));
             services.AddSingleton<IImageParameterFixer, DefaultImageParameterFixer>();
             services.AddEntityFrameworkNpgsql();
+            services.AddAuthorization();
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication(options =>
                 {
@@ -70,44 +73,54 @@ namespace ImageApi
                 options.AddPolicy(DefaultCorsPolicyName, builder =>
                 {
                     builder
-                        .WithOrigins(
-                            configuration["CorsOrigins"]
-                                .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                                .ToArray()
-                        )
-                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        //.WithOrigins(
+                        //    configuration["CorsOrigins"]
+                        //        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        //        .ToArray()
+                        //)
+                        .AllowAnyOrigin()
+                        //.SetIsOriginAllowedToAllowWildcardSubdomains()
                         .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
+                        .AllowAnyMethod();
+                        //.AllowCredentials();
                 });
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info {Title = "图片资源API", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "图片资源API", Version = "v1"});
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ImageApi.xml"));
                 c.OperationFilter<SwaggerFileUploadFilter>();
-                c.AddSecurityDefinition("bearerAuth", new ApiKeyScheme()
+                c.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme()
                 {
                     Description = "JWT Authorization header using the bearer scheme. Example: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
                 });
-                var security = new Dictionary<string, IEnumerable<string>> { { "bearerAuth", new string[] { } }, };
-                c.AddSecurityRequirement(security);
+                var apiSecurityRequirement = new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                                {Type = ReferenceType.SecurityScheme, Id = "bearerAuth"}
+                        },
+                        new List<string>()
+                    }
+                };
+                c.AddSecurityRequirement(apiSecurityRequirement);
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
             app.UseCors(DefaultCorsPolicyName);
+            app.UseRouting();
             app.UseAuthentication();
-            app.UseMvcWithDefaultRoute();
+            app.UseAuthorization();
+            app.UseRouting()
+                .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
             app.UseSwagger()
                 .UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "图片资源API"); });
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ImageCore;
 using Microsoft.AspNetCore.Http;
@@ -16,37 +17,29 @@ namespace ImageApi.Core
            return File.CopyToAsync(stream);
         }
 
-        private IFormFile _file;
-        public IFormFile File
+        public IFormFile File { get; set; }
+
+        public void Fix()
         {
-            get => _file;
-            set
-            {
-                if (value != null)
-                {
-                    this._file = value;
-                    this.FileType = this._file.ContentType;
-                    this.Length = this._file.Length;
-                    this.Extension = this._file.FileName.Substring(_file.FileName.LastIndexOf('.'));
-                    if (string.IsNullOrEmpty(this.FileName))
-                        this.FileName = this._file.FileName;
-                }
-            }
+            this.FileType = this.File.ContentType;
+            this.Length = this.File.Length;
+            this.Extension = this.File.FileName.Substring(File.FileName.LastIndexOf('.'));
+            if (string.IsNullOrEmpty(this.FileName))
+                this.FileName = this.File.FileName;
         }
 
         private byte[] _fileBytes;
 
+        [JsonIgnore]
         public byte[] FileBytes
         {
             get
             {
-                if (_fileBytes != null || _file == null) return _fileBytes;
-                using (var fileStream = _file.OpenReadStream())
-                {
-                    _fileBytes = new byte[_file.Length];
-                    fileStream.Read(_fileBytes, 0, _fileBytes.Length);
-                    return _fileBytes;
-                }
+                if (_fileBytes != null || File == null) return _fileBytes;
+                using var fileStream = File.OpenReadStream();
+                _fileBytes = new byte[File.Length];
+                fileStream.Read(_fileBytes, 0, _fileBytes.Length);
+                return _fileBytes;
             }
             set => _fileBytes = value;
         }

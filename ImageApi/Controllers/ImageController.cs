@@ -96,9 +96,10 @@ namespace ImageApi.Controllers
         [HttpPost]
         [Authorize]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> Upload([FromFile] ImageFileInfo file, bool isTemp = false,
+        public async Task<IActionResult> Upload([FromForm] ImageFileInfo file, bool isTemp = false,
             BusinessType businessType = BusinessType.Default)
         {
+            file.Fix();
             file.Validate(_imageOption);
             var image = file.ToImage();
             var imageKey = await _fileStore.SaveAsync(image, isTemp);

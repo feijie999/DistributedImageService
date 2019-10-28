@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ImageCore
@@ -8,7 +9,7 @@ namespace ImageCore
     public abstract class FileInfo
     {
         public string FileName { get; set; }
-        public long Length { get; set; }
+        public long? Length { get; set; }
         public string Extension { get; set; }
         public string FileType { get; set; }
 

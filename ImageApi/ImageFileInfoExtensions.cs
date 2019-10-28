@@ -32,7 +32,7 @@ namespace ImageApi.Core
             var image = new ImageDto()
             {
                 Format = imageFormat,
-                Length = fileInfo.Length,
+                Length = fileInfo.Length.Value,
                 Bytes = fileInfo.FileBytes,
                 CreateTime = DateTime.Now,
                 Name = fileInfo.FileName,
