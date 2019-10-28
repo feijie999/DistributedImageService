@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,6 +41,20 @@ namespace ImageApi
                 new PhysicalFileProvider(Directory.GetCurrentDirectory()));
             services.AddSingleton<IImageParameterFixer, DefaultImageParameterFixer>();
             services.AddEntityFrameworkNpgsql();
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = configuration["AuthServer:Authority"];
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = configuration["AuthServer:ApiName"];
+                    //options.InboundJwtClaimTypeMap["sub"] = AbpClaimTypes.UserId;
+                    //options.InboundJwtClaimTypeMap["role"] = AbpClaimTypes.Role;
+                    //options.InboundJwtClaimTypeMap["email"] = AbpClaimTypes.Email;
+                    //options.InboundJwtClaimTypeMap["email_verified"] = AbpClaimTypes.EmailVerified;
+                    //options.InboundJwtClaimTypeMap["phone_number"] = AbpClaimTypes.PhoneNumber;
+                    //options.InboundJwtClaimTypeMap["phone_number_verified"] = AbpClaimTypes.PhoneNumberVerified;
+                    //options.InboundJwtClaimTypeMap["name"] = AbpClaimTypes.UserName;
+                });
             services.AddImageService(option =>
                 {
                     option.Filters = new[] {".jpg", ".jpeg", ".gif", ".png", ".bmp"};
@@ -71,6 +86,15 @@ namespace ImageApi
                 c.SwaggerDoc("v1", new Info {Title = "图片资源API", Version = "v1"});
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ImageApi.xml"));
                 c.OperationFilter<SwaggerFileUploadFilter>();
+                c.AddSecurityDefinition("bearerAuth", new ApiKeyScheme()
+                {
+                    Description = "JWT Authorization header using the bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+                var security = new Dictionary<string, IEnumerable<string>> { { "bearerAuth", new string[] { } }, };
+                c.AddSecurityRequirement(security);
             });
         }
 
@@ -82,6 +106,7 @@ namespace ImageApi
                 app.UseDeveloperExceptionPage();
             }
             app.UseCors(DefaultCorsPolicyName);
+            app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
             app.UseSwagger()
                 .UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "图片资源API"); });

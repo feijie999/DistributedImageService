@@ -7,6 +7,7 @@ using ImageApi.Core;
 using ImageCore;
 using ImageCore.Enums;
 using ImageCore.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -93,6 +94,8 @@ namespace ImageApi.Controllers
         /// 例如 /img/s80x80/t20t201902-94E0437664E3FA99C094E0437664E3FA99C0.png
         /// </returns>
         [HttpPost]
+        [Authorize]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> Upload([FromFile] ImageFileInfo file, bool isTemp = false,
             BusinessType businessType = BusinessType.Default)
         {
