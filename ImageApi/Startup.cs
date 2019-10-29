@@ -79,10 +79,10 @@ namespace ImageApi
                         //        .ToArray()
                         //)
                         .AllowAnyOrigin()
-                        //.SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
                         .AllowAnyHeader()
                         .AllowAnyMethod();
-                        //.AllowCredentials();
+                    //.AllowCredentials();
                 });
             });
             services.AddSwaggerGen(c =>
@@ -118,8 +118,7 @@ namespace ImageApi
             app.UseCors(DefaultCorsPolicyName);
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseRouting()
+            app.UseAuthorization()
                 .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
             app.UseSwagger()
                 .UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "图片资源API"); });

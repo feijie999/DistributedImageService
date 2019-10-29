@@ -20,7 +20,6 @@ namespace ImageApi
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseUrls("http://*:8089")
                 .UseStartup<Startup>();
     }
 }
